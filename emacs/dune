@@ -1,0 +1,4 @@
+(install
+ (package toudou)
+ (section share_root)
+ (files (toudou.el as emacs/site-lisp/toudou.el)))
