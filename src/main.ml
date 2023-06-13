@@ -87,10 +87,20 @@ let output_frequency out (freq: AST.frequency) =
     | Yearly { m; d } ->
         out (Printf.sprintf "every %02d-%02d" m d)
 
-let output_annotation out (annotation: Date.t AST.annotation) =
+let output_annotation ~with_comment today out (annotation: Date.t AST.annotation) =
   match annotation with
     | Date date ->
-        out (Date.show date)
+        out (Date.show date);
+        let c = Date.cmp date today in
+        if with_comment && c >= 0 then (
+          out " — ";
+          if c = 0 then
+            out "Today"
+          else if Date.cmp date (Date.make { today with d = today.d + 1 }) = 0 then
+            out "Tomorrow"
+          else
+            out (Date.show_dow (Date.dow date))
+        )
     | Frequency (freq, None) ->
         output_frequency out freq
     | Frequency (freq, Some from) ->
@@ -121,7 +131,7 @@ let output_item ~with_annotation today out
       | Some annotation ->
           if with_annotation then (
             out "(";
-            output_annotation out annotation;
+            output_annotation ~with_comment: false today out annotation;
             out ") "
           )
   );
@@ -311,7 +321,7 @@ let output_group today out i (annotation, items) =
       | None ->
           ()
       | Some annotation ->
-          output_annotation out annotation;
+          output_annotation ~with_comment: true today out annotation;
           out "\n"
   );
   List.iter (output_item ~with_annotation: false today out) items

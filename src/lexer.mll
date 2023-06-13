@@ -78,5 +78,6 @@ and annotation_token = parse
         | Some i ->
             INT i
     }
+  | "—" [^'\n']+ { annotation_token lexbuf (* ignore comments *) }
   | [^'\n' ' ' '\t' '\r' '-' '(' ')']+ as x { keyword x }
   | eof { EOF }
