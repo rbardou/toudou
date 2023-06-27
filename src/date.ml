@@ -78,6 +78,7 @@ let to_unix_tm date: Unix.tm =
   }
 
 let of_unix_tm (tm: Unix.tm) =
+  let _, tm = Unix.mktime tm in
   {
     y = tm.tm_year + 1900;
     m = tm.tm_mon + 1;

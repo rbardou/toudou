@@ -151,7 +151,7 @@ let rec resolve_date (today: Date.t) (date: AST.date): Date.t =
         else
           Date.make { y = today.y; m; d }
     | Day d ->
-        d
+        Date.make d
     | Today ->
         today
     | Tomorrow ->
